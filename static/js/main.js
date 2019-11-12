@@ -2,7 +2,7 @@ class screenZoomer {
     constructor (btn, defaultStyled = false) {
         this.btn = btn;
         this.defaultStyled = defaultStyled;
-        this.loupeInit();
+        this.switchLoupe();
     }
 
     loupeInit() {
@@ -19,7 +19,39 @@ class screenZoomer {
         loupBox.append(loupHand, loupViewPort);
         fragment.append(loupBox);
         document.querySelector('body').prepend(fragment);
-        // если true то добавляю дефолтные стили для лупы, если не тру то пользователь сам стилизует через CSS
+        this.addDefaultStyles();
+        document.addEventListener('mousemove', this.LoupeMoving);
+        
+    }
+
+    switchLoupe() {
+        document.querySelector(this.btn).addEventListener('click', () => {
+            // задаем стэйт лупы вкл или выкл
+            let state = document.querySelector(this.btn).innerHTML === '"TheLoup" ON' ? '"TheLoup" OFF' :'"TheLoup" ON';
+            // иниициируем лупу если она еще не проинициализирована
+            if(!document.querySelector('.loup-box')) {
+                this.loupeInit();
+            }
+            // в зависимости от стейта кнопки скрываем или показываем лупу
+            if(state === '"TheLoup" ON') {
+                document.querySelector('.loup-box').style.cssText += 'display:block';
+                document.querySelector('section').style.cursor = 'none';
+            } else {
+                document.querySelector('.loup-box').style.cssText += 'display:none';
+                document.querySelector('section').style.cursor = 'auto';
+            }
+            // меняем стейт кнопки
+            document.querySelector(this.btn).innerHTML = state;
+        })
+    }
+
+    LoupeMoving(e) {
+        // меняю положение лупы при изменении положения мыши
+        document.querySelector('.loup-box').style.cssText += `left:${e.clientX - 425}px; top:${e.clientY - 175}px`;
+    }
+
+    addDefaultStyles() {
+        // если this.defaultStyled true то добавляю дефолтные стили для лупы, если не тру то пользователь сам стилизует через CSS
         if(this.defaultStyled) {
             document.querySelector('.loup-box').setAttribute('style', `
                 width:600px;
@@ -27,6 +59,7 @@ class screenZoomer {
                 position:fixed;
                 z-index:1000;
                 pointer-events:none;
+                display:none;
             `);
             document.querySelector('.loup-box__view').setAttribute('style', `
                 width:350px;
@@ -51,24 +84,6 @@ class screenZoomer {
                 top: 400px;
             `);
         }
-
-        this.switchLoupe();
-        
-    }
-
-    switchLoupe() {
-        document.querySelector(this.btn).addEventListener('click', () => {
-            let state = document.querySelector(this.btn).innerHTML === '"TheLoup" ON' ? '"TheLoup" OFF' :'"TheLoup" ON';
-
-            if(state === '"TheLoup" ON') {
-                // this.showLoupe();
-                console.log('showLoupe')
-            } else {
-                // this.hideLoupe();
-                console.log('hideLoupe')
-            }
-            document.querySelector(this.btn).innerHTML = state;
-        })
     }
 }
 
