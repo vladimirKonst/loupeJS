@@ -19,9 +19,14 @@ class screenZoomer {
         loupBox.append(loupHand, loupViewPort);
         fragment.append(loupBox);
         document.querySelector('body').prepend(fragment);
-        this.addDefaultStyles();
+        // подключил библиотеку делающую скрин документа в canvas 
+        // npm install html2canvas
+        // перед включением лупы делаю скрин странички и добавляю ее в область лупы
+        html2canvas(document.body).then(function(canvas) {
+            document.querySelector('.loup-box__view').appendChild(canvas);
+        });
         document.addEventListener('mousemove', this.LoupeMoving);
-        
+        this.addDefaultStyles();
     }
 
     switchLoupe() {
@@ -48,6 +53,12 @@ class screenZoomer {
     LoupeMoving(e) {
         // меняю положение лупы при изменении положения мыши
         document.querySelector('.loup-box').style.cssText += `left:${e.clientX - 425}px; top:${e.clientY - 175}px`;
+        // прокручиваю canvas
+        document.querySelector('canvas').setAttribute('style',`
+            position:relative;
+            z-index:-10;
+            transform:translateX(${-e.clientX + 175 - 15}px) translateY(${-e.clientY + 175 - 15}px) scale(1.2);
+        `);
     }
 
     addDefaultStyles() {
@@ -69,7 +80,8 @@ class screenZoomer {
                 left:250px;
                 box-sizing:border-box;
                 border:15px solid black;
-                background: #10f8de3d;
+                overflow:hidden;
+                background: #00ffef1a;
             `);
             document.querySelector('.loup-box__hand').setAttribute('style', `
                 width:350px;
