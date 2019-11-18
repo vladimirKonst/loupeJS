@@ -57,7 +57,7 @@ class screenZoomer {
         document.querySelector('canvas').setAttribute('style',`
             position:relative;
             z-index:-10;
-            transform:translateX(${-e.clientX + 175 - 15}px) translateY(${-e.clientY + 175 - 15}px) scale(1.2);
+            transform:translateX(${(-e.clientX + 175 - 15) * 1.3 + 115}px) translateY(${(-e.clientY + 175 - 15) * 1.3 + 100}px) scale(1.3);
         `);
     }
 
